@@ -42,26 +42,33 @@ public class LinkedList extends AbstractSequentialList<String> {
 	 */
 	@Override
 	public void add(int index, String element) {
-		if(this.contains(element)) {
+		if(this.contains(element) > 0) {
 			throw new IllegalArgumentException();
 		}
 		super.add(index, element);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.util.AbstractSequentialList#set(int, java.lang.Object)
-	 */
-	@Override
-	public String set(int index, String element) {
-		if(this.contains(element)) {
-			throw new IllegalArgumentException();
-		}
-		return super.set(index, element);
 	}
 
 	@Override
 	public int size() {
 		return size;
+	}
+	
+	
+	public int contains(String word) {
+		int count = 1;
+		if(front.data != null && front.data.equals(word)) {
+			return count;
+		} else {
+			ListIterator<String> iter = listIterator(0);
+			while(iter.hasNext()) {
+				String node = iter.next();
+				count++;
+				if(node.equals(word)) {
+					return count;
+				}
+			}
+		}
+		return -1;
 	}
 	/**
 	 * Defines a node of linked list to have data, a link to

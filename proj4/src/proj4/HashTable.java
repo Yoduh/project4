@@ -5,16 +5,19 @@ import java.io.IOException;
 
 public class HashTable {
 	
-	public static int dictCount;
-	
 	static final int m = 32768;
 	static final double phi = 1.61803398875;
 	static final int r = 128;
+	public static int collisions;
+	public static int dictCount;
+	public static int probeCount;
 	LinkedList[] table;
 
 	public HashTable(BufferedReader dictReader) throws IOException {
 		table = new LinkedList[m];
+		collisions = 0;
 		dictCount = 0;
+		probeCount = 0;
 		while(dictReader.ready()) {
 			String word = dictReader.readLine();
 			// hash
@@ -23,6 +26,7 @@ public class HashTable {
 			int hashIndex = compress(hash);
 			// insert in table
 			insert(hashIndex, word);
+			dictCount++;
 		}
 	}
 
@@ -46,9 +50,22 @@ public class HashTable {
 	public void insert(int idx, String word) {
 		if(table[idx] == null) {
 			table[idx] = new LinkedList();
+		} else {
+			collisions++;
 		}
 		table[idx].add(word);
-		dictCount++;
+	}
+	
+	public boolean lookup(String word) {
+		int idx = compress(hash(word));
+		if(table[idx] != null) {
+			int probes = table[idx].contains(word);
+			if(probes > 0) {
+				probeCount += probes;
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
