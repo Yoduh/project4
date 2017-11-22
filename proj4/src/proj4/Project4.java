@@ -61,8 +61,10 @@ public class Project4 {
 		boolean correct;
 		while(inputReader.ready()) {
 			in = new Scanner(inputReader.readLine());
+			in.useDelimiter("\\s|\\,|\\!|\\.|\\\"|\\--+|\\;");
 			while(in.hasNext()) {
 				String word = in.next();
+				if(word.length() == 0) continue;
 				correct = spellcheck(word);
 				if(!correct) {
 					misspells++;
@@ -88,6 +90,20 @@ public class Project4 {
 	}
 
 	private boolean spellcheck(String word) {
+		// remove non-apostrophe punctuation from beginning of string
+		System.out.println("WORD: " + word);
+		while(!Character.isLetterOrDigit(word.charAt(0)) && word.charAt(0) != '\'') {
+			if(word.length() == 1) { // return if the string was all punctuation but don't count it as a misspell since it wasn't a word
+				misspells--;
+				return false;
+			}
+			word = word.substring(1, word.length());
+		}
+		// remove non-apostrophe punctuation from end of string
+		while(!Character.isLetterOrDigit(word.charAt(word.length() - 1)) && word.charAt(word.length() - 1) != '\'') {
+			word = word.substring(0, word.length() - 1);
+		}
+		System.out.println("WORRRRD: " + word);
 		// check if exact word is in dictionary
 		lookups++;
 		if(hash.lookup(word))
@@ -102,7 +118,7 @@ public class Project4 {
 				return true;
 		}
 		// check without "'s" ending
-		if(word.substring(word.length() - 2, word.length()).equals("'s")) {
+		if(word.length() >=2 && word.substring(word.length() - 2, word.length()).equals("'s")) {
 			word = word.substring(0, word.length() - 2); // leave off the "'s"
 			System.out.println("no 's: " + word);
 			lookups++;
@@ -110,7 +126,7 @@ public class Project4 {
 				return true;
 		}
 		// check without "s" suffix
-		if(word.charAt(word.length() - 1) == 's') {
+		if(word.length() >=2 && word.charAt(word.length() - 1) == 's') {
 			String modWord = word.substring(0, word.length() - 1);
 			System.out.println("no s: " + modWord);
 			lookups++;
@@ -129,7 +145,7 @@ public class Project4 {
 			}
 		}
 		// check without "ed" suffix
-		if(word.substring(word.length() - 2, word.length()).equals("ed")) {
+		if(word.length() >=3 && word.substring(word.length() - 2, word.length()).equals("ed")) {
 			word = word.substring(0, word.length() - 2); // leave off the "ed"
 			System.out.println("no ed: " + word);
 			lookups++;
@@ -144,7 +160,7 @@ public class Project4 {
 			}
 		}
 		// check without "er" suffix
-		if(word.substring(word.length() - 2, word.length()).equals("er")) {
+		if(word.length() >=3 && word.substring(word.length() - 2, word.length()).equals("er")) {
 			word = word.substring(0, word.length() - 2); // leave off the "er"
 			System.out.println("no er: " + word);
 			if(hash.lookup(word))
@@ -157,7 +173,7 @@ public class Project4 {
 			}
 		}
 		// check without "ing" suffix
-		if(word.substring(word.length() - 3, word.length()).equals("ing")) {
+		if(word.length() >=4 && word.substring(word.length() - 3, word.length()).equals("ing")) {
 			word = word.substring(0, word.length() - 3); // leave off the "ing"
 			System.out.println("no ing: " + word);
 			if(hash.lookup(word))
@@ -170,7 +186,7 @@ public class Project4 {
 			}
 		}
 		// check without "ly" suffix
-		if(word.substring(word.length() - 2, word.length()).equals("ly")) {
+		if(word.length() >=2 && word.substring(word.length() - 2, word.length()).equals("ly")) {
 			word = word.substring(0, word.length() - 2); // leave off the "ly"
 			System.out.println("no ly: " + word);
 			if(hash.lookup(word))

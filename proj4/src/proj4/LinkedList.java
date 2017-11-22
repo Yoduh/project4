@@ -37,6 +37,21 @@ public class LinkedList extends AbstractSequentialList<String> {
 		return new LinkedListIterator(index);
 	}
 	
+	public void add(String element) {
+		if(this.contains(element) > 0) {
+			throw new IllegalArgumentException();
+		}
+		if(front.data == null) {
+			front.data = element;
+		} else {
+			ListIterator<String> iter = listIterator(0);
+			while(iter.hasNext()) {
+				iter = iter.next();
+			}
+		}
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.util.AbstractSequentialList#add(int, java.lang.Object)
 	 */
