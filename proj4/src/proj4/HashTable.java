@@ -7,7 +7,6 @@ public class HashTable {
 	
 	static final int m = 32768;
 	static final double phi = 1.61803398875;
-	static final int r = 128;
 	public static int collisions;
 	public static int dictCount;
 	public static int probeCount;
@@ -58,11 +57,14 @@ public class HashTable {
 	
 	public boolean lookup(String word) {
 		int idx = compress(hash(word));
-		if(table[idx] != null) {
+		if(table[idx] != null) {	// null index = no linked list = no probes required, return false
 			int probes = table[idx].contains(word);
-			if(probes > 0) {
+			if(probes > 0) {	// positive # of probes = found the word in a hash table linked list
 				probeCount += probes;
 				return true;
+			} else {
+				probes = probes * -1;	// negative # of probes = did not find the word in a hash table linked list
+				probeCount += probes;
 			}
 		}
 		return false;

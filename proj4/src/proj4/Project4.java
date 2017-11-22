@@ -81,10 +81,6 @@ public class Project4 {
 		System.out.printf("Average number of probes per word: %.2f\n", ((double) HashTable.probeCount / wordCount));
 		System.out.printf("Average number of probes per lookup operation: %.2f\n", ((double) HashTable.probeCount / lookups));
 		
-		
-		//String line = inputReader.readLine();
-		//Scanner scan = new Scanner(line);	
-		
 		dictReader.close();
 		inputReader.close();
 	}

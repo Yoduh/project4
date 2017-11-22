@@ -1,248 +1,347 @@
 package proj4;
 
-
-import java.util.AbstractSequentialList;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 /**
- * Custom implementation of a linked list that doesn't allow for null elements
- * or duplicate elements. Extends AbstractSequentialList meaning it utilizes
- * an iterator for traversing, adding, removing and setting.
- * 
+ * Provides custom implementation of a recursive linked list 
+ * that does not allow for null or duplicate elements as 
+ * defined by the equals() method. A special contains method
+ * returns the last index as a negative number if the given 
+ * String is not found so that probes can still be counted 
+ * for unfound words.
  * @author aehandlo
- * @param <String> Generic data type
  *
  */
-public class LinkedList extends AbstractSequentialList<String> {
+public class LinkedList {
 
-	/** Front node that is always null */
-	private ListNode front;
-	/** Last node that is always null */
-	private ListNode back;
-	/** Number of elements in the list */
+	private ListNode front; 
 	private int size;
+	private int index;
+	
 	/**
-	 * Constructor to initialize instance variables
+	 * Constructor for LinkedListRecursive, initializes front to
+	 * null and size to zero
 	 */
 	public LinkedList() {
-		front = new ListNode(null);
-		back = new ListNode(null);
-		front.next = back;
-		back.prev = front;
+		front = null;
 		size = 0;
 	}
-	@Override
-	public ListIterator<String> listIterator(int index) {
-		return new LinkedListIterator(index);
+	
+	/**
+	 * Returns whether the LinkedListRecursive is empty
+	 * @return true if list is empty, false otherwise
+	 */
+	public boolean isEmpty() {
+		if (size() == 0) {
+			return true;
+		}
+		return false;
+		
 	}
 	
-	public void add(String element) {
-		if(this.contains(element) > 0) {
-			throw new IllegalArgumentException();
-		}
-		if(front.data == null) {
-			front.data = element;
+	/**
+	 * Returns the size of the LinkedListRecursive
+	 * @return size is the size of the list
+	 */
+	public int size() {
+		if (front == null) {
+			return 0;
 		} else {
-			ListIterator<String> iter = listIterator(0);
-			while(iter.hasNext()) {
-				iter = iter.next();
+			return size;
+		}
+	}
+	
+	
+	/**
+	 * Adds the element to the LinkedListRecursive
+	 * @param element is the element to be added 
+	 * @return true if the element was added at the index,
+	 * false otherwise
+	 * @throws NullPointerException if element is null
+	 * @throws IllegalArgumentException if the list
+	 * already contains element
+	 */
+	public boolean add(String element) {
+		if (element == null) {
+			throw new NullPointerException();
+		}
+	
+		if (isEmpty()) {
+			front = new ListNode(element, front);
+			size++;
+			return true;
+		} else {
+			index = 0;
+			if (front.contains(element, index) >= 0) {
+				throw new IllegalArgumentException();
 			}
+			return front.add(element);
+		
+		}
+	}
+	
+	/**
+	 * Adds the element to the LinkedListRecursive at the given index
+	 * @param element is the element to be added 
+	 * @param idx is the index where the element should be added
+	 * @throws NullPointerException if element is null
+	 * @throws IllegalArgumentException if the list
+	 * already contains element
+	 * @throws IndexOutOfBoundsException is the index less than zero
+	 * or greater than list size
+	 */
+	public void add(int idx, String element) {
+		index = 0;
+		if (element == null) {
+			throw new NullPointerException();
+		}
+		
+		if (idx < 0 || idx > size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		
+		if (isEmpty()) {
+			front = new ListNode(element, front);
+			size++;
+	
+		} 
+		else if (front.contains(element, index) >= 0) {
+			throw new IllegalArgumentException();
+			
+		} 
+		else if (idx == 0) {
+			front = new ListNode(element, front);
+			size++;
+		} else {
+			front.add(idx, element);
 		}
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.util.AbstractSequentialList#add(int, java.lang.Object)
+	/**
+	 * Returns the element at the given index
+	 * @param idx is the index of the element to be returned
+	 * @return element at specified index
+	 * @throws IndexOutOfBoundsException is the index less than zero
+	 * or greater than list size
+	 * 
 	 */
-	@Override
-	public void add(int index, String element) {
-		if(this.contains(element) > 0) {
+	public String get(int idx) {
+		
+		if (idx < 0 || idx > size - 1) {
+			throw new IndexOutOfBoundsException();
+		} else if (idx == 0) {
+			return front.data;
+		} else {
+			return front.get(idx);
+		}
+	}
+	
+	/**
+	 * Removes the first occurrence of the given element in the list
+	 * @param element is the element to be removed
+	 * @return true if element is removed from list, false if not
+	 * @throws NullPointerException if element is null
+	 * @throws IllegalArgumentException if list is empty
+	 * @throws IllegalArgumentException if front is null
+	 * 
+	 */
+	public boolean remove(String element) {
+		if (element == null) {
+			return false;
+		} else if (isEmpty()) {
+			return false;
+		} else if (front == null) {
+			throw new IllegalArgumentException();
+		} else {
+			if (element.equals(front.data)) {
+				front = front.next;
+				size--;
+				return true;
+				}
+		} 
+		
+		return front.remove(element);
+		
+	}
+	
+	/**
+	 * Removes the element in the list at the specified index
+	 * @param idx is the index where element should be removed
+	 * @return the element is removed from list
+	 * @throws IndexOutOfBoundsException is the index less than zero
+	 * or greater than list size - 1
+	 * @throws IllegalArgumentException if list is empty
+	 * @throws IllegalArgumentException if front is null
+	 * 
+	 */
+	public String remove(int idx) {
+		String e = null;
+		if (idx < 0 || idx > size - 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		
+		if (front == null) {
 			throw new IllegalArgumentException();
 		}
-		super.add(index, element);
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-	
-	
-	public int contains(String word) {
-		int count = 1;
-		if(front.data != null && front.data.equals(word)) {
-			return count;
-		} else {
-			ListIterator<String> iter = listIterator(0);
-			while(iter.hasNext()) {
-				String node = iter.next();
-				count++;
-				if(node.equals(word)) {
-					return count;
-				}
-			}
+		
+		if (isEmpty()) {
+			throw new IllegalArgumentException();
 		}
-		return -1;
+		
+		if (idx == 0) {
+			e = front.data;
+			front = front.next;
+			size--;
+			return e;
+		}
+		 
+			
+		return front.remove(idx);
 	}
+	
 	/**
-	 * Defines a node of linked list to have data, a link to
-	 * the next node, and a link to the previous node
+	 * Checks to see whether list contains specified element
+	 * @param element is element to be searched for in list
+	 * @return true if list contains element, false otherwise
+	 * @throws NullPointerException if element is null
+	 * @throws IllegalArgumentException if list is empty
+	 */
+	public int contains(String element) {
+		if (element == null) {
+			throw new NullPointerException();
+		}
+		
+		if (front == null) {
+			throw new IllegalArgumentException();
+		} else {
+			index = 0;
+			return front.contains(element, index);
+		}
+	}	
+	
+	
+	/**
+	 * Inner class which provides functionality for ListNode
 	 * @author aehandlo
 	 *
 	 */
 	private class ListNode {
+		
 		public String data;
 		public ListNode next;
-		public ListNode prev;
+		
 		/**
-		 * Constructor to initialize new node given no prev or next
-		 * @param data Generic data being held by the node
+		 * Constructor for ListNode
+		 * @param data is the data element for the node
+		 * @param next is the link element for the node
 		 */
-		public ListNode(String data) {
-			this.data = data;
-			next = null;
-			prev = null;
-		}
-		/**
-		 * Constructor to initialize new node given prev and next
-		 * @param data Generic data being held by node
-		 * @param prev Previous node in the list
-		 * @param next Next node in the list
-		 */
-		public ListNode(String data, ListNode prev, ListNode next) {
+		public ListNode(String data, ListNode next) {
 			this.data = data;
 			this.next = next;
-			this.prev = prev;
 		}
-	}
-	/**
-	 * Iterator used to traverse, add, remove and set nodes
-	 * @author aehandlo
-	 *
-	 */
-	private class LinkedListIterator implements ListIterator<String> {
-		/** Previous node relative to the iterator's position */
-		public ListNode previous;
-		/** Next node relative to the iterator's position */ 
-		public ListNode next;
-		/** Index of previous node */
-		public int previousIndex;
-		/** Index of next node */
-		public int nextIndex;
-		/** Node that was last retrieved by next() or previous() */
-		private ListNode lastRetrieved;
+
 		/**
-		 * Constructor to initialize iterator at a given position in the list
-		 * @param index Index to place the iterator before
-		 * @throws IndexOutOfBoundsException if index is not a legal index
+		 * Adds the element to the LinkedListRecursive at the given index
+		 * @param element is the element to be added 
+		 * @param idx is the index where the element should be added
 		 */
-		public LinkedListIterator(int index) {
-			if(index < 0 || index > size && size > 0 || index != size && size == 0) {
-				throw new IndexOutOfBoundsException();
+		public void add(int idx, String element) {
+			idx--;
+			// if idx = 0, the next index is what we want to add to
+			if (idx == 0) {
+				next = new ListNode(element, next);
+				size++;
+			} else {
+				next.add(idx, element);
 			}
 			
-			previousIndex = index - 1;
-			nextIndex = index;
-			lastRetrieved = null;
-			
-			ListNode current = front;
-			do {
-				previous = current;
-				current = current.next;
-				index--;
-			} while(index >= 0);
-			next = current;
-		}
-		@Override
-		public void add(String element) {
-			if(element == null) {
-				throw new NullPointerException();
-			}
-			next.prev = new ListNode(element, previous, next);
-			previous.next = next.prev;
-			next = next.prev;
-			lastRetrieved = null;
-			size++;
 		}
 
-		@Override
-		public boolean hasNext() {
-			if(next.data != null) {
+
+		/**
+		 * Checks to see whether list contains specified element
+		 * @param element is element to be searched for in list
+		 * @return true if list contains element, false otherwise
+		 * @throws NullPointerException if element is null
+		 * @throws IllegalArgumentException if list is empty
+		 */
+		public int contains(String element, int index) {
+			if (this.data.equals(element)) {
+				return ++index;
+			} else if (next == null) {
+				return (index + 1) * -1;
+			} else {
+				index++;
+				return next.contains(element, index);
+			}
+
+		}
+
+		/**
+		 * Adds the element to the LinkedListRecursive
+		 * @param element is the element to be added 
+		 * @return true if the element was added at the index,
+		 * false otherwise
+		 */
+		public boolean add(String element) {
+			if (next == null) {
+				next = new ListNode(element, next);
+				size++;
 				return true;
+			} else {
+				return next.add(element);
 			}
-			return false;
-		}
-
-		@Override
-		public boolean hasPrevious() {
-			if(previous.data != null) {
-				return true;
-			}
-			return false;
-		}
-
-		@Override
-		public String next() {
-			if(!hasNext()) {
-				throw new NoSuchElementException();
-			}
-			lastRetrieved = next;
-			previous = next;
-			next = next.next;
-			previousIndex++;
-			nextIndex++;
-			return lastRetrieved.data;
-		}
-
-		@Override
-		public int nextIndex() {
-			return nextIndex;
-		}
-
-		@Override
-		public String previous() {
-			if(!hasPrevious()) {
-				throw new NoSuchElementException();
-			}
-			lastRetrieved = previous;
-			next = previous;
-			previous = previous.prev;
-			previousIndex--;
-			nextIndex--;
-			return lastRetrieved.data;
-		}
-
-		@Override
-		public int previousIndex() {
-			return previousIndex;
-		}
-
-		@Override
-		public void remove() {
-			if(lastRetrieved == null) {
-				throw new IllegalStateException();
-			}
-			lastRetrieved.prev.next = lastRetrieved.next;
-			lastRetrieved.next.prev = lastRetrieved.prev;
-			lastRetrieved = null;
-			size--;
-		}
-
-		@Override
-		public void set(String element) {
-			if(lastRetrieved == null) {
-				throw new IllegalStateException();
-			}
-			
-			if(element == null) {
-				throw new NullPointerException();
-			}
-			
-			lastRetrieved.data = element;
-			
+				
 		}
 		
+		/**
+		 * Returns the element at the given index
+		 * @param idx is the index of the element to be returned
+		 * @return element at specified index
+		 * 
+		 */
+		public String get(int idx) {
+			if (idx == 0) {
+				return this.data;
+			} else {
+				idx--;
+				return next.get(idx);
+			}
+		}
+		
+		/**
+		 * Removes the first occurence of the given element in the list
+		 * @param element is the element to be removed
+		 * @return true if element is removed from list, false oter
+		 * 
+		 */
+		public boolean remove(String element) {
+			if (next == null) {
+				return false;
+			} else if (next.data.equals(element)) {
+				next = next.next;
+				size--;
+				return true; 
+			} else {
+				return next.remove(element);
+			}
+		}
+		
+		/**
+		 * Removes the element in the list at the specified index
+		 * @param idx is the index where element should be removed
+		 * @return the element is removed from list
+		 */
+		public String remove(int idx) {
+			String e = null;
+			idx--;
+			if (idx == 0) {
+				e = next.data;
+				next = next.next;
+				size--;
+				return e;
+			} else {
+				return next.remove(idx);	
+			}
+		}
 	}
-
 }
