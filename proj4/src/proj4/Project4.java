@@ -74,7 +74,7 @@ public class Project4 {
 		boolean correct;
 		while(inputReader.ready()) {
 			in = new Scanner(inputReader.readLine());
-			in.useDelimiter("\\s|\\,|\\!|\\.|\\\"|\\--+|\\;");
+			in.useDelimiter("([^A-Za-z0-9']+)");
 			while(in.hasNext()) {
 				String word = in.next();
 				if(word.length() == 0) continue;
