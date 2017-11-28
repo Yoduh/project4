@@ -199,9 +199,10 @@ public class LinkedList {
 	}
 	
 	/**
-	 * Checks to see whether list contains specified element
-	 * @param element is element to be searched for in list
-	 * @return true if list contains element, false otherwise
+	 * Checks to see whether list contains specified String.
+	 * @param element is String to be searched for in list
+	 * @return index of where element is in the list, 
+	 * 			or negative length of list if element not found
 	 * @throws NullPointerException if element is null
 	 * @throws IllegalArgumentException if list is empty
 	 */
@@ -258,11 +259,10 @@ public class LinkedList {
 
 
 		/**
-		 * Checks to see whether list contains specified element
-		 * @param element is element to be searched for in list
-		 * @return true if list contains element, false otherwise
-		 * @throws NullPointerException if element is null
-		 * @throws IllegalArgumentException if list is empty
+		 * Checks to see whether list contains specified String.
+		 * @param element is String to be searched for in list
+		 * @return index of where element is in the list, 
+		 * 			or negative length of list if element not found
 		 */
 		public int contains(String element, int index) {
 			if (this.data.equals(element)) {
